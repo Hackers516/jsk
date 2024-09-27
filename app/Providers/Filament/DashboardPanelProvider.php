@@ -42,6 +42,7 @@ class DashboardPanelProvider extends PanelProvider
             ->navigationGroups([
                 'Projects',
                 'Home Page',
+                'Gallery',
             ])
            
             ->plugin(FilamentScaffoldPlugin::make())

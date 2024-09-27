@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjectsNameResource\Pages;
-use App\Filament\Resources\ProjectsNameResource\RelationManagers;
-use App\Models\ProjectsName;
+use App\Filament\Resources\CompleteProjectsResource\Pages;
+use App\Filament\Resources\CompleteProjectsResource\RelationManagers;
+use App\Models\CompleteProjects;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,19 +17,16 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 
-class ProjectsNameResource extends Resource
+class CompleteProjectsResource extends Resource
 {
-    protected static ?string $model = ProjectsName::class;
+    protected static ?string $model = CompleteProjects::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-plus';
-    protected static ?string $navigationLabel = 'Add Project';
-    
+    protected static ?string $navigationIcon = 'heroicon-s-check-circle';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
-    }
-
-   
+    }  
  
 protected static ?string $navigationGroup = 'Projects';
 
@@ -37,7 +34,8 @@ protected static ?string $navigationGroup = 'Projects';
     {
         return $form
             ->schema([
-                TextInput::make('project_name')
+
+                Forms\Components\TextInput::make('title')->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
                     if (($get('slug') ?? '') !== Str::slug($old)) {
@@ -48,7 +46,14 @@ protected static ?string $navigationGroup = 'Projects';
                 }), 
                 
 
-             TextInput::make('slug')->required()->readOnly()
+             TextInput::make('slug')->required()->readOnly(),
+        
+              
+Forms\Components\DatePicker::make('date')->required(),
+
+Forms\Components\RichEditor::make('desc')->required()->columnSpan(2),
+Forms\Components\FileUpload::make('card_image')->required(),
+Forms\Components\FileUpload::make('images')->required()->image()->multiple()
             ]);
     }
 
@@ -56,8 +61,11 @@ protected static ?string $navigationGroup = 'Projects';
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project_name')->sortable()->searchable(),
-Tables\Columns\TextColumn::make('slug')->sortable()->searchable()
+                Tables\Columns\TextColumn::make('card_image')->sortable()->searchable(),
+Tables\Columns\TextColumn::make('date')->sortable()->searchable(),
+Tables\Columns\TextColumn::make('title')->sortable()->searchable(),
+Tables\Columns\TextColumn::make('desc')->sortable()->searchable(),
+Tables\Columns\TextColumn::make('images')->sortable()->searchable()
             ])
             ->filters([
                 //
@@ -83,10 +91,10 @@ Tables\Columns\TextColumn::make('slug')->sortable()->searchable()
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProjectsNames::route('/'),
-            'create' => Pages\CreateProjectsName::route('/create'),
-            'view' => Pages\ViewProjectsName::route('/{record}'),
-            'edit' => Pages\EditProjectsName::route('/{record}/edit'),
+            'index' => Pages\ListCompleteProjects::route('/'),
+            'create' => Pages\CreateCompleteProjects::route('/create'),
+            'view' => Pages\ViewCompleteProjects::route('/{record}'),
+            'edit' => Pages\EditCompleteProjects::route('/{record}/edit'),
         ];
     }
 }

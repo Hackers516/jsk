@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjectsNameResource\Pages;
-use App\Filament\Resources\ProjectsNameResource\RelationManagers;
-use App\Models\ProjectsName;
+use App\Filament\Resources\GalleryCategoryResource\Pages;
+use App\Filament\Resources\GalleryCategoryResource\RelationManagers;
+use App\Models\GalleryCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,27 +17,21 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 
-class ProjectsNameResource extends Resource
+class GalleryCategoryResource extends Resource
 {
-    protected static ?string $model = ProjectsName::class;
+    protected static ?string $model = GalleryCategory::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-plus';
-    protected static ?string $navigationLabel = 'Add Project';
-    
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    protected static ?string $navigationIcon = 'heroicon-c-squares-2x2';
 
    
- 
-protected static ?string $navigationGroup = 'Projects';
+
+    protected static ?string $navigationGroup = 'Gallery';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('project_name')
+                Forms\Components\TextInput::make('name')->required()
                 ->live(onBlur: true)
                 ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
                     if (($get('slug') ?? '') !== Str::slug($old)) {
@@ -48,7 +42,7 @@ protected static ?string $navigationGroup = 'Projects';
                 }), 
                 
 
-             TextInput::make('slug')->required()->readOnly()
+             TextInput::make('slug')->required()->readOnly(),
             ]);
     }
 
@@ -56,7 +50,7 @@ protected static ?string $navigationGroup = 'Projects';
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('project_name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
 Tables\Columns\TextColumn::make('slug')->sortable()->searchable()
             ])
             ->filters([
@@ -83,10 +77,10 @@ Tables\Columns\TextColumn::make('slug')->sortable()->searchable()
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProjectsNames::route('/'),
-            'create' => Pages\CreateProjectsName::route('/create'),
-            'view' => Pages\ViewProjectsName::route('/{record}'),
-            'edit' => Pages\EditProjectsName::route('/{record}/edit'),
+            'index' => Pages\ListGalleryCategories::route('/'),
+            'create' => Pages\CreateGalleryCategory::route('/create'),
+            'view' => Pages\ViewGalleryCategory::route('/{record}'),
+            'edit' => Pages\EditGalleryCategory::route('/{record}/edit'),
         ];
     }
 }
